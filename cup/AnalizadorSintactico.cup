@@ -1,0 +1,138 @@
+/* ----------------------Seccion de declaraciones package e imports--------------------*/
+
+import java_cup.runtime.*;
+
+/* ----------------------Seccion componentes de codigo de usuario --------------------*/
+
+
+/* ------------Declaracion de la lista de simbolos de la gramatica-----------*/
+
+terminal REQUIRE, END, DEF, RETURN, IF, THEN, BEGIN, ELSE, CASE, WHEN, UNTIL, DO, ELSIF, UNLESS, WHILE, RETRY, BREAK, FOR, IN, BOOLEAN, SUMA, RESTA, MULT, DIVISION, PORCENTAJE, ELEVADO, COMPARADORES1, COMPARADORES2, IGUAL, MASIGUAL, MENOSIGUAL, MULTIGUAL, DIVISIONIGUAL, PORCENTAJEIGUAL, ELEVADOIGUAL, COMPARADORESBIT, COMPARADORBOL1, COMPARADORBOL2, PARENTESISABIERTO, PARENTESISCERRADO, CORCHETEABIERTO, CORCHETECERRADO, NULO, ENTERO, FLOAT, IDENTIFICADOR, ID_GLOBAL, IDENTIFICADORFUNCION, COMA, PUNTOYCOMA, RANGO, CRLF, CADENA, ESCAPEDQUOTE;
+
+
+non terminal start, expression_list, expression, require_block, function_definition, function_definition_header, function_name, function_definition_params, function_definition_params_list, function_definition_body, return_statement, function_call, function_call_param_list, function_call_params, if_elseif_statement, if_statement, for_statement, unless_statement, case_statement, until_statement, while_statement, repeat_statement, assigment, array_assigment, array_definition, array_definition_elements, lvalue, rvalue, terminator, crlf, then, break1, valor, identificadores, array_elements, else_statement, when_statement, do1, operadores, asignadores, valor1, valor2;
+
+
+/* -------------Declaracion de precedencias -----------*/
+
+
+
+/* --------------Declaracion de la gramatica -----------*/
+
+start  ::= expression_list;
+expression_list ::= crlf expression terminator expression_list crlf | crlf expression terminator crlf;
+crlf ::= CRLF crlf | CRLF;
+expression ::= function_definition
+            |require_block
+            |if_statement
+            |unless_statement
+            |rvalue
+            |while_statement
+            |for_statement
+            |case_statement
+            |until_statement
+    	    |repeat_statement
+            ;
+
+require_block::= REQUIRE CADENA;
+ 
+function_definition::= function_definition_header function_definition_body END;
+
+ 
+function_definition_header::= DEF function_name function_definition_params CRLF;
+ 
+function_name::=  IDENTIFICADORFUNCION | IDENTIFICADOR;
+ 
+function_definition_params::= PARENTESISABIERTO function_definition_params_list PARENTESISCERRADO |  function_definition_params_list;
+
+
+function_definition_params_list::= IDENTIFICADOR COMA function_definition_params_list  | IDENTIFICADOR | ;
+ 
+function_definition_body ::= expression_list return_statement| expression_list;
+
+return_statement::= RETURN rvalue CRLF;
+
+function_call ::= function_name function_call_param_list;
+ 
+function_call_param_list::= function_call_params | ;
+ 
+function_call_params::= rvalue COMA function_call_params | rvalue;
+
+
+
+if_elseif_statement::= ELSIF rvalue then CRLF expression_list | ELSIF rvalue then CRLF expression_list ELSE CRLF expression_list | ELSIF rvalue then CRLF expression_list if_elseif_statement;
+ 
+
+if_statement::= IF rvalue then CRLF expression_list END | IF rvalue then CRLF expression_list ELSE CRLF expression_list END | IF rvalue then CRLF expression_list if_elseif_statement END;
+
+then ::= THEN | ;
+
+for_statement ::= FOR identificadores IN PARENTESISABIERTO valor RANGO valor PARENTESISCERRADO expression_list break1 CRLF END | FOR identificadores IN valor RANGO valor expression_list break1 CRLF END | FOR identificadores IN CORCHETEABIERTO array_elements CORCHETECERRADO expression_list break1 CRLF END;
+ 
+break1::= BREAK | ;
+valor::= ENTERO | FLOAT | lvalue;
+identificadores ::= lvalue COMA identificadores | lvalue;
+array_elements::= array_elements COMA array_definition | array_definition;
+
+unless_statement::= UNLESS rvalue then CRLF expression_list END | UNLESS rvalue then CRLF expression_list ELSE CRLF expression_list END;
+
+
+case_statement ::= CASE lvalue CRLF when_statement else_statement END;
+ 
+else_statement::= ELSE CRLF expression_list | ;
+
+when_statement::= WHEN rvalue then expression_list when_statement | WHEN PARENTESISABIERTO valor RANGO valor PARENTESISCERRADO then expression_list when_statement | WHEN valor RANGO valor then expression_list when_statement | ;
+
+
+until_statement: UNTIL rvalue do1 CRLF expression_list END;
+
+do1::= DO | ;   
+                         
+while_statement: WHILE rvalue do1 CRLF expression_list  break1 CRLF END;
+
+repeat_statement : BEGIN CRLF expression_list END WHILE rvalue;
+
+            
+assigment: lvalue asignadores rvalue
+;
+
+asignadores::= IGUAL | MASIGUAL | MENOSIGUAL | MULTIGUAL | DIVISIONIGUAL | PORCENTAJEIGUAL | ELEVADOIGUAL;
+            
+ 
+array_definition: CORCHETEABIERTO array_definition_elements CORCHETECERRADO | CORCHETEABIERTO CORCHETECERRADO;
+ 
+array_definition_elements: array_definition_elements COMA rvalue | rvalue;
+
+ 
+lvalue: IDENTIFICADOR | ID_GLOBAL;
+
+operadores::=SUMA | RESTA | MULT | DIVISION | PORCENTAJE | ELEVADO;
+
+valor1 ::= ENTERO | FLOAT | CADENA | lvalue;
+
+valor2::= array_definition | BOOLEAN | NULO | lvalue;
+ 
+rvalue: lvalue 
+	|CADENA
+	|BOOLEAN
+	|FLOAT
+	|ENTERO
+	|NULO
+	|array_definition
+	|assigment
+	|function_call
+	|rvalue operadores rvalue
+	|COMPARADORBOL2 rvalue
+	|rvalue COMPARADORBOL1 rvalue
+	|rvalue COMPARADORESBIT rvalue
+	|valor1 COMPARADORES2 valor1 | valor1 COMPARADORES2 valor1
+	|valor2 COMPARADORES1 valor2
+	|PARENTESISABIERTO rvalue PARENTESISCERRADO
+	;
+
+terminator : PUNTOYCOMA | CRLF;
+
+
+
+
+

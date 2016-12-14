@@ -1,0 +1,26 @@
+def Prueba
+x = 0
+y = "hola34 fgsdfg fgsdf 33"
+z = "eii"
+=begin fasdfa
+fasd
+
+=end
+end
+
+if x<5
+s=2
+end
+
+while x<2 do
+s=s+(1*2)
+break
+end
+
+for x in 1..5
+x=x+1
+y=y+2
+break
+end
+
+

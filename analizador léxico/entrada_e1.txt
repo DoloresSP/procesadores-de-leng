@@ -1,0 +1,9 @@
+123 prueba 34 a 09 que pasa
+	y ahora require end
+def    return  if    true   and
+#comenta ddfas = . -
+=begin hdfasdfasd
+sdfas 
+=end "cad.=fsdfa"
+hola && || ! 12.34
+
